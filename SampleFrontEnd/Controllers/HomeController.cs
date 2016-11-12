@@ -26,5 +26,10 @@ namespace SampleFrontEnd.Controllers
 
             return View();
         }
+
+        public ActionResult Sample()
+        {
+            return View();
+        }
     }
 }

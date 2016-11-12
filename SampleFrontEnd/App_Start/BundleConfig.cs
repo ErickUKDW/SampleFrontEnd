@@ -8,6 +8,14 @@ namespace SampleFrontEnd
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            bundles.Add(new ScriptBundle("~/bundles/datatables").Include("~/Scripts/DataTables/jquery.dataTables.min.js",
+                "~/Scripts/DataTables/dataTables.bootstrap.js"));
+
+            bundles.Add(new StyleBundle("~/Content/datatables").Include("~/Content/DataTables/css/dataTables.bootstrap.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/myajax").Include(
+                "~/Scripts/jquery-{version}.js", "~/Scripts/jquery.unobtrusive*", "~/Scripts/jquery.validate.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
