@@ -46,12 +46,10 @@
 @section scripts{
     <script>
         $(document).ready(function () {
-
             $("#tabelku").on("click", "tr", function () {
                 //var myTr = $(this).closest("td");
                 console.log($(this).find("td").eq(0).text());
                 var firstname = $(this).find("td").eq(1).text();
-
                 $("#txtResult").val(firstname);
                 $("#myModal").modal('toggle');
             });
