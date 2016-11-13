@@ -13,6 +13,7 @@ namespace SampleFrontEnd.Controllers
     public class CategoriesController : Controller
     {
         // GET: Categories
+        //contoh penggunaan modal form untuk cari dan pilih data
         public ActionResult Index(string categoryname)
         {
             CategoryDAL categoryDal = new CategoryDAL();
