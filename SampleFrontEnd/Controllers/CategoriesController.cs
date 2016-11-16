@@ -25,6 +25,9 @@ namespace SampleFrontEnd.Controllers
                 return PartialView("_PartialCategoryResult", models);
             }
 
+            //menambahkan select list
+            ViewBag.ListCategory = new SelectList(models, "CategoryId", "CategoryName");
+
             return View(models);
         }
 
