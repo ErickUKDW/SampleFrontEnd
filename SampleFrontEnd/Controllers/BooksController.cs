@@ -4,10 +4,47 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using SampleFrontEnd.Models;
+using SampleFrontEnd.DAL;
+
 namespace SampleFrontEnd.Controllers
 {
     public class BooksController : Controller
     {
+        public JsonResult GetAllByCategory(string CategoryId)
+        {
+            BooksDAL bookDAL = new BooksDAL();
+            return Json(bookDAL.GetAllByCategory(CategoryId), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult Delete(string CategoryId)
+        {
+            BooksDAL bookDAL = new BooksDAL();
+            bookDAL.DeleteBooksByCategory(CategoryId);
+            var result = new { Success = "true", Message = "Berhasil mendelete data" };
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Create(IEnumerable<Book> listBook)
+        {
+            BooksDAL bookDAL = new BooksDAL();
+            foreach(var book in listBook)
+            {
+                bookDAL.Insert(book);
+            }
+            var result = new { Success = "true", Message = "Berhasil menambah data" };
+            return Json(result);
+        }
+
+        public ActionResult SampleMasterDetail()
+        {
+            return View();
+        }
+
+
+
         // GET: Books
         public ActionResult Index()
         {
@@ -20,70 +57,6 @@ namespace SampleFrontEnd.Controllers
             return View();
         }
 
-        // GET: Books/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Books/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Books/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Books/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Books/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Books/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+      
     }
 }

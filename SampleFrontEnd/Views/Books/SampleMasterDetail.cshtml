@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "SampleMasterDetail";
+}
+
+@section css {
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+}
+
+<h2>Sample Master Detail</h2>
+
+<div class="row">
+    <label for="CategoryID">Category ID</label><br />
+    <input type="text" name="CategoryID" id="CategoryID" data-bind="value: CategoryID" />
+    <button class="btn btn-info" data-toggle="modal" data-target="#myModal">...</button>
+    <br /><br />
+    <label for="CategoryName">Category Name</label><br />
+    <input type="text" name="CategoryName" id="CategoryName" data-bind="value: CategoryName" /><br /><br />
+</div><br />
+<hr />
+
+<br />
+<div class="row">
+    <div id="tableBooks"></div>
+    <button id="btnSave" class="btn btn-primary">Save</button>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">List Categories</h4>
+            </div>
+            <div class="modal-body">
+                <div id="tableCategory"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+    @*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>*@
+    <script type="text/javascript">
+        /// <reference path="~/Scripts/kendo/2016.3.1118/kendo.ui.core.min.js" />
+
+        var listBooks;
+        $(document).ready(function () {
+            $("#btnSave").click(function () {
+                
+                var result="";
+                for (var x in listBooks)
+                {
+                    result += listBooks[x].Title + " ";
+                }
+                alert(result);
+
+                //delete
+                var param = { CategoryID: $("#CategoryID").val() };
+                $.ajax({
+                    type: 'POST',
+                    data: param,
+                    url: '@Url.Action("Delete", "Books")',
+                    dataType: "json",
+                    async: true,
+                    cache: false,
+                    success: function (data) {
+                        alert("Delete !");
+                    },
+                    complete: function(data){
+                        var param = JSON.stringify({ listBook: listBooks });
+                        alert(param);
+                        $.ajax({
+                            type: 'POST',
+                            data: param,
+                            url: '@Url.Action("Create", "Books")',
+                            dataType: "json",
+                            async: true,
+                            cache: false,
+                            success: function (data) {
+                                alert("Update data !");
+                            },
+                            error: function (err) {
+                                alert("Error :" + err);
+                            }
+                        });
+                    },
+                    error: function (err) {
+                        alert("Error :" + err);
+                    }
+                })
+
+               
+
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetAllCategories", "Categories")',
+                dataType: "json",
+                async: true,
+                cache: false,
+                success: function (data) {
+                    //alert("data : " + data[0].Nama);
+                    GetCategories(data);
+                },
+                error: function (err) {
+                    alert("Error :" + err);
+                }
+            })
+        })
+
+        function GetRowData() {
+            $("#tableCategory").on("click", "tr", function () {
+                var categoryid = $(this).find("td").eq(0).text().trim();
+                var categoryname = $(this).find("td").eq(1).text().trim();
+                $("#CategoryID").val(categoryid);
+                $("#CategoryName").val(categoryname);
+                $("#myModal").modal('toggle');
+                var param = { CategoryId: categoryid };
+                IsiBooks(param);
+            });
+        }
+
+        function IsiBooks(param) {
+            $.ajax({
+                type: 'GET',
+                data: param,
+                url: '@Url.Action("GetAllByCategory", "Books")',
+                dataType: "json",
+                async: true,
+                cache: false,
+                success: function (data) {
+                    listBooks = data;
+                    GetBook(listBooks);
+                },
+                error: function (err) {
+                    alert("Error :" + err);
+                }
+            });
+        }
+
+        var MyDateField = function (config) {
+            jsGrid.Field.call(this, config);
+        };
+
+        MyDateField.prototype = new jsGrid.Field({
+            itemTemplate: function (value) {
+                return value.toString();
+            }
+        });
+
+        jsGrid.fields.myDateField = MyDateField;
+
+        function GetBook(data) {
+            $("#tableBooks").jsGrid({
+                width: "100%",
+                sorting: true,
+                paging: true,
+                pageSize: 5,
+                pageButtonCount: 5,
+                data: data,
+                inserting: true,
+                editing: true,
+                fields: [
+                    { name: "BookID", type: "text", width: 50 },
+                    { name: "AuthorID", type: "text", width: 50 },
+                    { name: "CategoryID", type: "text", width: 50 },
+                    { name: "Title", type: "text", width: 150 },
+                    { name: "PublicationDate", type: "myDateField", width: 100, align: "center" },
+                    { name: "ISBN", type: "text", width: 100 },
+                    { name: "Price", type: "number", width: 80 },
+                    { type: "control" }
+                ]
+            });
+        }
+
+        function GetCategories(data) {
+            $("#tableCategory").jsGrid({
+                width: "100%",
+                sorting: true,
+                paging: true,
+                pageSize: 5,
+                pageButtonCount: 5,
+                data: data,
+                fields: [
+                    { name: "CategoryID", type: "text", width: 50 },
+                    { name: "CategoryName", type: "text", width: 150 }
+                ]
+            });
+            GetRowData();
+        }
+
+
+    </script>
+}

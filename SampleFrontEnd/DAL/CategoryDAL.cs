@@ -41,6 +41,24 @@ namespace SampleFrontEnd.DAL
             }
         }
 
+        public void Insert(Category category)
+        {
+            using (SqlConnection conn = new SqlConnection(GetConnStr()))
+            {
+                string strSql = @"insert into Categories(CategoryName) values(@CategoryName)";
+                var param = new { CategoryName = category.CategoryName };
+                try
+                {
+                    conn.Execute(strSql, param);
+                }
+                catch (SqlException sqlEx)
+                {
+                    throw new Exception("Error : "+sqlEx.Message);
+                }
+                conn.Close();
+            }
+        }
+
 
     }
 }

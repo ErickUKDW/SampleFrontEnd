@@ -19,6 +19,8 @@ namespace SampleFrontEnd.Controllers
             CategoryDAL categoryDal = new CategoryDAL();
             var models = categoryDal.GetAll();
 
+            
+
             if (Request.IsAjaxRequest())
             {
                 models = categoryDal.GetAllByName(categoryname);
@@ -30,6 +32,20 @@ namespace SampleFrontEnd.Controllers
 
             return View(models);
         }
+
+        public JsonResult GetAllCategories()
+        {
+            CategoryDAL categoryDAL = new CategoryDAL();
+            return Json(categoryDAL.GetAll(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetAuthorById(string AuthorID)
+        {
+            AuthorDAL authorDAL = new AuthorDAL();
+            return Json(authorDAL.GetById(AuthorID), JsonRequestBehavior.AllowGet);
+        }
+
+
 
         // GET: Categories/Details/5
         public ActionResult Details(int id)

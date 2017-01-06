@@ -22,12 +22,7 @@ namespace SampleFrontEnd.Models
 
     public class Book
     {
-        public Book()
-        {
-            this.OrderDetails = new List<OrderDetail>();
-            this.Reviews = new List<Review>();
-            this.ShoppingCarts = new List<ShoppingCart>();
-        }
+      
 
         public int BookID { get; set; }
         public int? AuthorID { get; set; }
@@ -42,9 +37,6 @@ namespace SampleFrontEnd.Models
 
         public virtual Author Author { get; set; }
         public virtual Category Category { get; set; }
-        public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
-        public virtual IEnumerable<Review> Reviews { get; set; }
-        public virtual IEnumerable<ShoppingCart> ShoppingCarts { get; set; }
     }
 
     public class Category
